@@ -16,7 +16,7 @@ char algorithm[] = "Insertion sort"; // Algorithm name
 #define ARRAY_COLOR GREEN // Color of the rest of the array
 #define SUCCESS_COLOR GOLD // Color of the array after sorting
 // Uncomment to get a gradiant
-#define GRADIANT
+// #define GRADIANT
 #ifdef GRADIANT
 #define COLOR1 PINK // First Color in the gradiant
 #define COLOR2 WHITE // Second color in the gradiant
