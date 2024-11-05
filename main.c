@@ -4,9 +4,11 @@
 /*========================Define Macros========================*/
 #define SCREEN_HEIGHT 768 //Window resolution1366x768
 #define SCREEN_WIDTH 1366
+#define FPS 60
 #define COL_WIDTH (SCREEN_WIDTH/ARRAY_SIZE) // Bar width
-#define ARRAY_SIZE 20 // Size of Array (SCREEN_WIDTH/COL_WIDTH)
-#define COL_HEIGHT ((SCREEN_HEIGHT-40)/ARRAY_SIZE) // Bar height (SCREEN_HEIGHT - 40(leaving headroom for text) / ARRAY_SIZE)
+#define ARRAY_SIZE 300 // Size of Array (SCREEN_WIDTH/COL_WIDTH)
+#define COL_HEIGHT ((SCREEN_HEIGHT-50)/ARRAY_SIZE) // Bar height (SCREEN_HEIGHT - 40(leaving headroom for text) / ARRAY_SIZE)
+
 char algorithm[] = "Insertion sort"; // Algorithm name
 // Uncomment to try the worst case scenario mathematically
 // #define WORST
@@ -14,10 +16,10 @@ char algorithm[] = "Insertion sort"; // Algorithm name
 #define ARRAY_COLOR GREEN // Color of the rest of the array
 #define SUCCESS_COLOR GOLD // Color of the array after sorting
 // Uncomment to get a gradiant
-// #define GRADIANT
+#define GRADIANT
 #ifdef GRADIANT
-#define COLOR1 PURPLE // First Color in the gradiant
-#define COLOR2 (Color){0,255,0,255}
+#define COLOR1 PINK // First Color in the gradiant
+#define COLOR2 WHITE // Second color in the gradiant
 #endif
 
 /*========================Define Macros========================*/
@@ -59,7 +61,8 @@ int sortArray(int array[]) {
 #endif
                 }
             }
-            DrawText(TextFormat("Sorting Algorithm: %s\nSample Size : %d \nIteration N° %d", algorithm,ARRAY_SIZE, n),
+            DrawText(TextFormat("Sorting Algorithm: %s\nSample Size : %d \nIteration N° %d\nTime : %lfs", algorithm,
+                                ARRAY_SIZE, n, GetTime()),
                      0, 0, 18,WHITE);
 #ifdef WORST
             DrawText("Worst case scenario",0,50,18,RED);
@@ -83,14 +86,16 @@ int main(void) {
     }
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Projet ALSD : Insertion");
 
-    SetTargetFPS(ARRAY_SIZE);
+    SetTargetFPS(FPS);
 
     const int TotalIterations = sortArray(array);
+    const double time = GetTime();
     while (!WindowShouldClose()) {
         BeginDrawing();
         ClearBackground(BLACK);
-        DrawText(TextFormat("Sorting Algorithm: %s\nSample Size: %d \nTotal Iterations: %d", algorithm,ARRAY_SIZE,
-                            TotalIterations), 0, 0, 18,WHITE);
+        DrawText(TextFormat("Sorting Algorithm: %s\nSample Size: %d \nTotal Iterations: %d\nTime: %lfs", algorithm,
+                            ARRAY_SIZE,
+                            TotalIterations, time), 0, 0, 18,WHITE);
 #ifdef WORST
         DrawText("Worst case scenario",0,50,18,RED);
 #endif
