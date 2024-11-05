@@ -19,13 +19,13 @@
 #define COLOR1 PINK // First Color in the gradiant
 #define COLOR2 WHITE // Second color in the gradiant
 #endif
-#define SELECTION
-//#define INSERTION
+#define SELECTION // Use selection sort
+//#define INSERTION // Use Insertion sort
 
 #ifdef INSERTION
 char algorithm[] = "Insertion sort"; // Algorithm name
 #elifdef SELECTION
-char algorithm[] = "Selection sort";
+char algorithm[] = "Selection sort"; // Algorithm name
 #endif
 
 
