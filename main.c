@@ -4,9 +4,9 @@
 /*========================Define Macros========================*/
 #define SCREEN_HEIGHT 768 // Window resolution1366x768
 #define SCREEN_WIDTH 1366
-#define FPS 120 // Max FPS (Set to 0 for unlimited)
+#define FPS 60 // Max FPS (Set to 0 for unlimited)
 #define COL_WIDTH (SCREEN_WIDTH/ARRAY_SIZE) // Bar width
-#define ARRAY_SIZE 1366 // Size of Array
+#define ARRAY_SIZE 50 // Size of Array
 #define MAX_NUM (SCREEN_HEIGHT-40) // Max value in Array
 // Uncomment to try the worst case scenario mathematically
 // #define WORST
@@ -50,7 +50,7 @@ void outputArray(int array[], bool state_array[], int n, int i) {
                           SELECT_COLOR);
         else {
 #ifdef GRADIANT
-            const double t = (double) array[k] / ARRAY_SIZE;
+            const double t = (double) array[k] / MAX_NUM;
             DrawRectangle(k * COL_WIDTH,SCREEN_HEIGHT - array[k],COL_WIDTH, array[k],
                           lerpRGB(COLOR1,COLOR2, t));
 #else
@@ -145,7 +145,7 @@ int main(void) {
 
         for (int k = 0; k < ARRAY_SIZE; ++k) {
 #ifdef GRADIANT
-            const double t = (double) array[k] / ARRAY_SIZE;
+            const double t = (double) array[k] / MAX_NUM;
             DrawRectangle(k * COL_WIDTH,SCREEN_HEIGHT - array[k],COL_WIDTH, array[k],
                           lerpRGB(COLOR1,COLOR2, t));
 #else
