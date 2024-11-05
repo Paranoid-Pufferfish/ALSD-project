@@ -4,15 +4,34 @@
 /*========================Define Macros========================*/
 #define SCREEN_HEIGHT 768 //Window resolution1366x768
 #define SCREEN_WIDTH 1366
-#define COL_WIDTH 10 // Bar width
-#define ARRAY_SIZE (SCREEN_WIDTH/COL_WIDTH) // Size of Array (SCREEN_WIDTH/COL_WIDTH)
+#define COL_WIDTH (SCREEN_WIDTH/ARRAY_SIZE) // Bar width
+#define ARRAY_SIZE 200 // Size of Array (SCREEN_WIDTH/COL_WIDTH)
 #define COL_HEIGHT ((SCREEN_HEIGHT-40)/ARRAY_SIZE) // Bar height (SCREEN_HEIGHT - 40(leaving headroom for text) / ARRAY_SIZE)
-
 char algorithm[] = "Insertion sort"; // Algorithm name
-
 // Uncomment to try the worst case scenario mathematically
 // #define WORST
+#define SELECT_COLOR RED
+#define ARRAY_COLOR GREEN
+#define SUCCESS_COLOR GOLD
+// Uncomment to get a gradiant
+// #define GRADIANT
+#ifdef GRADIANT
+#define COLOR1 PURPLE
+#define COLOR2 (Color){0,255,0,255}
+#endif
+
 /*========================Define Macros========================*/
+// NOLINTBEGIN
+Color lerpRGB(const Color colorA, const Color colorB, const double t) {
+    Color lerpRGB = {};
+    lerpRGB.r = colorA.r + ((colorB.r - colorA.r) * t);
+    lerpRGB.g = colorA.g + ((colorB.g - colorA.g) * t);
+    lerpRGB.b = colorA.b + ((colorB.b - colorA.b) * t);
+    lerpRGB.a = colorA.a + ((colorB.a - colorA.a) * t);
+    return lerpRGB;
+}
+
+// NOLINTEND
 int sortArray(int array[]) {
     int n = 0;
     bool state_array[ARRAY_SIZE] = {false};
@@ -28,10 +47,17 @@ int sortArray(int array[]) {
             for (int k = 0; k < ARRAY_SIZE && !WindowShouldClose(); ++k) {
                 if (state_array[k])
                     DrawRectangle(k * COL_WIDTH,SCREEN_HEIGHT - array[k] * COL_HEIGHT,COL_WIDTH, array[k] * COL_HEIGHT,
-                                  RED);
-                else
+                                  SELECT_COLOR);
+                else {
+#ifdef GRADIANT
+                    const double t = (double) array[k] / ARRAY_SIZE;
                     DrawRectangle(k * COL_WIDTH,SCREEN_HEIGHT - array[k] * COL_HEIGHT,COL_WIDTH, array[k] * COL_HEIGHT,
-                                  GREEN);
+                                  lerpRGB(COLOR1,COLOR2, t));
+#else
+                    DrawRectangle(k * COL_WIDTH,SCREEN_HEIGHT - array[k] * COL_HEIGHT,COL_WIDTH, array[k] * COL_HEIGHT,
+                                  ARRAY_COLOR);
+#endif
+                }
             }
             DrawText(TextFormat("Sorting Algorithm: %s\nSample Size : %d \nIteration N° %d", algorithm,ARRAY_SIZE, n),
                      0, 0, 18,WHITE);
@@ -47,12 +73,12 @@ int sortArray(int array[]) {
 }
 
 int main(void) {
-    unsigned int array[ARRAY_SIZE];
+    int array[ARRAY_SIZE];
     for (int i = 0; i < ARRAY_SIZE; ++i) {
 #ifdef WORST
         array[i]= ARRAY_SIZE-i;
 #else
-        array[i] = arc4random_uniform(ARRAY_SIZE) + 1;
+        array[i] = (int) arc4random_uniform(ARRAY_SIZE) + 1;
 #endif
     }
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Projet ALSD : Insertion");
@@ -73,8 +99,14 @@ int main(void) {
 #endif
 
         for (int k = 0; k < ARRAY_SIZE; ++k) {
-            DrawRectangle(k * COL_WIDTH,SCREEN_HEIGHT - array[k] * COL_HEIGHT,COL_WIDTH, (int) array[k] * COL_HEIGHT,
-                          YELLOW);
+#ifdef GRADIANT
+            const double t = (double) array[k] / ARRAY_SIZE;
+            DrawRectangle(k * COL_WIDTH,SCREEN_HEIGHT - array[k] * COL_HEIGHT,COL_WIDTH, array[k] * COL_HEIGHT,
+                          lerpRGB(COLOR1,COLOR2, t));
+#else
+            DrawRectangle(k * COL_WIDTH,SCREEN_HEIGHT - array[k] * COL_HEIGHT,COL_WIDTH, array[k] * COL_HEIGHT,
+                          SUCCESS_COLOR);
+#endif
         }
         EndDrawing();
     }
