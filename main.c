@@ -2,14 +2,15 @@
 #include <stdlib.h>
 #include "raylib.h"
 /*========================Define Macros========================*/
-#define SCREEN_HEIGHT 768 //Window resolution1366x768
-#define SCREEN_WIDTH 1366
-#define FPS 60 // Max FPS (Set to 0 for unlimited)
+#define SCREEN_HEIGHT 1000 // Window resolution1366x768
+#define SCREEN_WIDTH 1920
+#define FPS 0 // Max FPS (Set to 0 for unlimited)
 #define COL_WIDTH (SCREEN_WIDTH/ARRAY_SIZE) // Bar width
-#define ARRAY_SIZE 500 // Size of Array (SCREEN_WIDTH/COL_WIDTH)
-#define COL_HEIGHT ((SCREEN_HEIGHT-50)/ARRAY_SIZE) // Bar height (SCREEN_HEIGHT - 40(leaving headroom for text) / ARRAY_SIZE)
+#define ARRAY_SIZE 940 // Size of Array (Shouldn't exceed HEIGHT-60)
+#define COL_HEIGHT ((SCREEN_HEIGHT-60)/ARRAY_SIZE) // Bar height (SCREEN_HEIGHT - 60(leaving headroom for text) / ARRAY_SIZE)
+
 // Uncomment to try the worst case scenario mathematically
-#define WORST
+// #define WORST
 #define SELECT_COLOR RED // Color of the bar being treated
 #define ARRAY_COLOR GREEN // Color of the rest of the array
 #define SUCCESS_COLOR GOLD // Color of the array after sorting
