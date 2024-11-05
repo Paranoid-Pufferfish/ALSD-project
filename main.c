@@ -4,7 +4,7 @@
 /*========================Define Macros========================*/
 #define SCREEN_HEIGHT 768 //Window resolution1366x768
 #define SCREEN_WIDTH 1366
-#define FPS 60
+#define FPS 120 // Max FPS (Set to 0 for unlimited)
 #define COL_WIDTH (SCREEN_WIDTH/ARRAY_SIZE) // Bar width
 #define ARRAY_SIZE 300 // Size of Array (SCREEN_WIDTH/COL_WIDTH)
 #define COL_HEIGHT ((SCREEN_HEIGHT-50)/ARRAY_SIZE) // Bar height (SCREEN_HEIGHT - 40(leaving headroom for text) / ARRAY_SIZE)
@@ -16,7 +16,7 @@ char algorithm[] = "Insertion sort"; // Algorithm name
 #define ARRAY_COLOR GREEN // Color of the rest of the array
 #define SUCCESS_COLOR GOLD // Color of the array after sorting
 // Uncomment to get a gradiant
-// #define GRADIANT
+#define GRADIANT
 #ifdef GRADIANT
 #define COLOR1 PINK // First Color in the gradiant
 #define COLOR2 WHITE // Second color in the gradiant
