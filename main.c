@@ -5,18 +5,18 @@
 #define SCREEN_HEIGHT 768 //Window resolution1366x768
 #define SCREEN_WIDTH 1366
 #define COL_WIDTH (SCREEN_WIDTH/ARRAY_SIZE) // Bar width
-#define ARRAY_SIZE 200 // Size of Array (SCREEN_WIDTH/COL_WIDTH)
+#define ARRAY_SIZE 20 // Size of Array (SCREEN_WIDTH/COL_WIDTH)
 #define COL_HEIGHT ((SCREEN_HEIGHT-40)/ARRAY_SIZE) // Bar height (SCREEN_HEIGHT - 40(leaving headroom for text) / ARRAY_SIZE)
 char algorithm[] = "Insertion sort"; // Algorithm name
 // Uncomment to try the worst case scenario mathematically
 // #define WORST
-#define SELECT_COLOR RED
-#define ARRAY_COLOR GREEN
-#define SUCCESS_COLOR GOLD
+#define SELECT_COLOR RED // Color of the bar being treated
+#define ARRAY_COLOR GREEN // Color of the rest of the array
+#define SUCCESS_COLOR GOLD // Color of the array after sorting
 // Uncomment to get a gradiant
 // #define GRADIANT
 #ifdef GRADIANT
-#define COLOR1 PURPLE
+#define COLOR1 PURPLE // First Color in the gradiant
 #define COLOR2 (Color){0,255,0,255}
 #endif
 
@@ -82,11 +82,8 @@ int main(void) {
 #endif
     }
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Projet ALSD : Insertion");
-#ifdef WORST
+
     SetTargetFPS(ARRAY_SIZE);
-#else
-    SetTargetFPS(60);
-#endif
 
     const int TotalIterations = sortArray(array);
     while (!WindowShouldClose()) {
