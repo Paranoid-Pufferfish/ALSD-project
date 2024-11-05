@@ -2,15 +2,17 @@
 #include <stdlib.h>
 #include "raylib.h"
 /*========================Define Macros========================*/
-#define SCREEN_HEIGHT 1000 // Window resolution1366x768
-#define SCREEN_WIDTH 1920
-#define FPS 0 // Max FPS (Set to 0 for unlimited)
+#define SCREEN_HEIGHT 768 // Window resolution1366x768
+#define SCREEN_WIDTH 1366
+#define FPS 120 // Max FPS (Set to 0 for unlimited)
 #define COL_WIDTH (SCREEN_WIDTH/ARRAY_SIZE) // Bar width
-#define ARRAY_SIZE 940 // Size of Array (Shouldn't exceed HEIGHT-60)
-#define COL_HEIGHT ((SCREEN_HEIGHT-60)/ARRAY_SIZE) // Bar height (SCREEN_HEIGHT - 60(leaving headroom for text) / ARRAY_SIZE)
-
+#define ARRAY_SIZE 1366 // Size of Array
+#define MAX_NUM (SCREEN_HEIGHT-40) // Max value in Array
 // Uncomment to try the worst case scenario mathematically
 // #define WORST
+#ifdef WORST
+#define ARRAY_SIZE MAX_NUM
+#endif
 #define SELECT_COLOR RED // Color of the bar being treated
 #define ARRAY_COLOR GREEN // Color of the rest of the array
 #define SUCCESS_COLOR GOLD // Color of the array after sorting
@@ -20,8 +22,8 @@
 #define COLOR1 PINK // First Color in the gradiant
 #define COLOR2 WHITE // Second color in the gradiant
 #endif
-#define SELECTION // Use selection sort
-//#define INSERTION // Use Insertion sort
+//#define SELECTION // Use selection sort
+#define INSERTION // Use Insertion sort
 
 #ifdef INSERTION
 char algorithm[] = "Insertion sort"; // Algorithm name
@@ -40,16 +42,16 @@ Color lerpRGB(const Color colorA, const Color colorB, const double t) {
     lerpRGB.a = colorA.a + ((colorB.a - colorA.a) * t);
     return lerpRGB;
 }
-void outputArray(int array[], bool state_array[], int n) {
+void outputArray(int array[], bool state_array[], int n, int i) {
     ClearBackground(BLACK);
     for (int k = 0; k < ARRAY_SIZE && !WindowShouldClose(); ++k) {
         if (state_array[k])
-            DrawRectangle(k * COL_WIDTH,SCREEN_HEIGHT - array[k] * COL_HEIGHT,COL_WIDTH, array[k] * COL_HEIGHT,
+            DrawRectangle(k * COL_WIDTH,SCREEN_HEIGHT - array[k],COL_WIDTH, array[k],
                           SELECT_COLOR);
         else {
 #ifdef GRADIANT
             const double t = (double) array[k] / ARRAY_SIZE;
-            DrawRectangle(k * COL_WIDTH,SCREEN_HEIGHT - array[k] * COL_HEIGHT,COL_WIDTH, array[k] * COL_HEIGHT,
+            DrawRectangle(k * COL_WIDTH,SCREEN_HEIGHT - array[k],COL_WIDTH, array[k],
                           lerpRGB(COLOR1,COLOR2, t));
 #else
             DrawRectangle(k * COL_WIDTH,SCREEN_HEIGHT - array[k] * COL_HEIGHT,COL_WIDTH, array[k] * COL_HEIGHT,
@@ -57,11 +59,13 @@ void outputArray(int array[], bool state_array[], int n) {
 #endif
         }
     }
-    DrawText(TextFormat("Sorting Algorithm: %s\nSample Size : %d \nIteration N° %d\nTime : %lfs", algorithm,
-                        ARRAY_SIZE, n, GetTime()),
-             0, 0, 18,WHITE);
+    DrawText(TextFormat(
+                 "Sorting Algorithm: %s | Sample Size : %d | Current Element : T[%d] | Current FPS : %d | Iteration N° %d | Time : %.2lfs",
+                 algorithm,
+                 ARRAY_SIZE, i, GetFPS(), n, GetTime()),
+             0, 0, 20,WHITE);
 #ifdef WORST
-    DrawText("Worst case scenario", 0, 60, 18,RED);
+    DrawText("Worst case scenario", 0, 20, 20,RED);
 #endif
 }
 
@@ -79,7 +83,7 @@ int sortSelectionArray(int array[]) {
                 imin = j;
             state_array[imint] = state_array[j] = true;
             state_array[i] = true;
-            outputArray(array, state_array, n);
+            outputArray(array, state_array, n,i);
             state_array[imint] = state_array[j] = false;
             EndDrawing();
         }
@@ -102,7 +106,7 @@ int sortInsertionArray(int array[]) {
             array[j - 1] = temp;
             state_array[j] = state_array[j - 1] = true;
             n++;
-            outputArray(array, state_array, n);
+            outputArray(array, state_array, n,i);
             state_array[j] = state_array[j - 1] = false;
             EndDrawing();
         }
@@ -112,11 +116,11 @@ int sortInsertionArray(int array[]) {
 
 int main(void) {
     int array[ARRAY_SIZE];
-    for (int i = 0; i < ARRAY_SIZE; ++i) {
+    for (int i = 0; i < ARRAY_SIZE; i++) {
 #ifdef WORST
-        array[i]= ARRAY_SIZE-i;
+        array[i]= abs(ARRAY_SIZE-i);
 #else
-        array[i] = (int) arc4random_uniform(ARRAY_SIZE) + 1;
+        array[i] = (int) arc4random_uniform(MAX_NUM) + 1;
 #endif
     }
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Projet ALSD : Sorting Algorithms");
@@ -132,9 +136,9 @@ int main(void) {
     while (!WindowShouldClose()) {
         BeginDrawing();
         ClearBackground(BLACK);
-        DrawText(TextFormat("Sorting Algorithm: %s\nSample Size: %d \nTotal Iterations: %d\nTime: %lfs", algorithm,
+        DrawText(TextFormat("Sorting Algorithm: %s | Sample Size: %d | Total Iterations: %d | Time: %lfs", algorithm,
                             ARRAY_SIZE,
-                            TotalIterations, time), 0, 0, 18,WHITE);
+                            TotalIterations, time), 0, 0, 20,WHITE);
 #ifdef WORST
         DrawText("Worst case scenario", 0, 60, 18,RED);
 #endif
@@ -142,7 +146,7 @@ int main(void) {
         for (int k = 0; k < ARRAY_SIZE; ++k) {
 #ifdef GRADIANT
             const double t = (double) array[k] / ARRAY_SIZE;
-            DrawRectangle(k * COL_WIDTH,SCREEN_HEIGHT - array[k] * COL_HEIGHT,COL_WIDTH, array[k] * COL_HEIGHT,
+            DrawRectangle(k * COL_WIDTH,SCREEN_HEIGHT - array[k],COL_WIDTH, array[k],
                           lerpRGB(COLOR1,COLOR2, t));
 #else
             DrawRectangle(k * COL_WIDTH,SCREEN_HEIGHT - array[k] * COL_HEIGHT,COL_WIDTH, array[k] * COL_HEIGHT,
