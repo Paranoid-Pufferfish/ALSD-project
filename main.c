@@ -6,21 +6,26 @@
 #define SCREEN_WIDTH 1366
 #define FPS 60 // Max FPS (Set to 0 for unlimited)
 #define COL_WIDTH (SCREEN_WIDTH/ARRAY_SIZE) // Bar width
-#define ARRAY_SIZE 50 // Size of Array
+#define ARRAY_SIZE 200 // Size of Array
 #define MAX_NUM (SCREEN_HEIGHT-40) // Max value in Array
 // Uncomment to try the worst case scenario mathematically
-// #define WORST
+//#define WORST
 #ifdef WORST
 #define ARRAY_SIZE MAX_NUM
 #endif
 #define SELECT_COLOR RED // Color of the bar being treated
-#define ARRAY_COLOR GREEN // Color of the rest of the array
-#define SUCCESS_COLOR GOLD // Color of the array after sorting
+#define ARRAY_COLOR (GetColor(0x137a7fff)) // Color of the rest of the array
+#define SUCCESS_COLOR (GetColor(0xe12885ff)) // Color of the array after sorting
 // Uncomment to get a gradiant
-#define GRADIANT
-#ifdef GRADIANT
-#define COLOR1 PINK // First Color in the gradiant
-#define COLOR2 WHITE // Second color in the gradiant
+//  #define GRADIANT2
+#define GRADIANT3
+#ifdef GRADIANT2
+#define COLOR1 (GetColor(0xbec8d1ff)) // First Color in the gradiant
+#define COLOR2 (GetColor(0x137a7fff)) // Second color in the gradiant
+#elifdef GRADIANT3
+#define COLOR2 (GetColor(0xbec8d1ff)) // First Color in the gradiant
+#define COLOR1 (GetColor(0x137a7fff)) // Second color in the gradiant
+#define COLOR3 (GetColor(0xe12885ff)) // Third color in the gradiant
 #endif
 //#define SELECTION // Use selection sort
 #define INSERTION // Use Insertion sort
@@ -42,20 +47,30 @@ Color lerpRGB(const Color colorA, const Color colorB, const double t) {
     lerpRGB.a = colorA.a + ((colorB.a - colorA.a) * t);
     return lerpRGB;
 }
-void outputArray(int array[], bool state_array[], int n, int i) {
+Color lerpRGBThree(const Color colorA, const Color colorB, const Color colorC, const double t) {
+    Color ab = lerpRGB(colorA, colorB, t);
+    Color bc = lerpRGB(colorB, colorC, t);
+    return lerpRGB(ab, bc, t);
+}
+
+// NOLINTEND
+void outputArray(int array[], const bool state_array[], const int n, const int i) {
     ClearBackground(BLACK);
     for (int k = 0; k < ARRAY_SIZE && !WindowShouldClose(); ++k) {
         if (state_array[k])
             DrawRectangle(k * COL_WIDTH,SCREEN_HEIGHT - array[k],COL_WIDTH, array[k],
                           SELECT_COLOR);
         else {
-#ifdef GRADIANT
+#ifdef GRADIANT2
             const double t = (double) array[k] / MAX_NUM;
             DrawRectangle(k * COL_WIDTH,SCREEN_HEIGHT - array[k],COL_WIDTH, array[k],
-                          lerpRGB(COLOR1,COLOR2, t));
+                          lerpRGB(COLOR1,COLOR2,t));
+#elifdef GRADIANT3
+            const double t = (double) array[k] / MAX_NUM;
+            DrawRectangle(k * COL_WIDTH,SCREEN_HEIGHT - array[k],COL_WIDTH, array[k],
+                          lerpRGBThree(COLOR1,COLOR2,COLOR3, t));
 #else
-            DrawRectangle(k * COL_WIDTH,SCREEN_HEIGHT - array[k] * COL_HEIGHT,COL_WIDTH, array[k] * COL_HEIGHT,
-                          ARRAY_COLOR);
+            DrawRectangle(k * COL_WIDTH,SCREEN_HEIGHT - array[k],COL_WIDTH, array[k],ARRAY_COLOR);
 #endif
         }
     }
@@ -69,7 +84,6 @@ void outputArray(int array[], bool state_array[], int n, int i) {
 #endif
 }
 
-// NOLINTEND
 int sortSelectionArray(int array[]) {
     int n = 0;
     bool state_array[ARRAY_SIZE] = {false};
@@ -124,7 +138,8 @@ int main(void) {
 #endif
     }
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Projet ALSD : Sorting Algorithms");
-
+    Image icon = LoadImage("../miku.png");
+    SetWindowIcon(icon);
     SetTargetFPS(FPS);
 #ifdef SELECTION
     const int TotalIterations = sortSelectionArray(array);
@@ -144,17 +159,22 @@ int main(void) {
 #endif
 
         for (int k = 0; k < ARRAY_SIZE; ++k) {
-#ifdef GRADIANT
+#ifdef GRADIANT2
             const double t = (double) array[k] / MAX_NUM;
             DrawRectangle(k * COL_WIDTH,SCREEN_HEIGHT - array[k],COL_WIDTH, array[k],
                           lerpRGB(COLOR1,COLOR2, t));
+#elifdef GRADIANT3
+            const double t = (double) array[k] / MAX_NUM;
+            DrawRectangle(k * COL_WIDTH,SCREEN_HEIGHT - array[k],COL_WIDTH, array[k],
+                          lerpRGBThree(COLOR1,COLOR2,COLOR3, t));
 #else
-            DrawRectangle(k * COL_WIDTH,SCREEN_HEIGHT - array[k] * COL_HEIGHT,COL_WIDTH, array[k] * COL_HEIGHT,
+            DrawRectangle(k * COL_WIDTH,SCREEN_HEIGHT - array[k],COL_WIDTH, array[k],
                           SUCCESS_COLOR);
 #endif
         }
         EndDrawing();
     }
     CloseWindow();
+    UnloadImage(icon);
     return 0;
 }
